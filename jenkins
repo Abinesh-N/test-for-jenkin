@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('SCM') {
+            steps {
+                git branch: 'war', url: 'https://github.com/Abinesh-N/project-1.git'
+            }
+        }
+        stage('build') {
+            steps {
+                bat '''mvn clean'''
+                bat '''mvn install'''
+            }
+        }
+        stage('Deployment') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:9090/')], contextPath: 'demo pipeline', war: '**/*.war'
+            }
+        }
+    }
+}
+
